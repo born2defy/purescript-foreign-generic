@@ -18,6 +18,15 @@ defaultGenericEnumOptions =
   }
 
 -- | A generic function to be used with "Enums", or sum types with only no-argument constructors. This is used for decoding from strings to one of the constructors, combined with the `constructorTagTransform` property of `SumEncoding`.
+genericDecodeEnumDefault
+  :: forall a rep
+   . Generic a rep
+  => GenericDecodeEnum rep
+  => Foreign
+  -> F a
+genericDecodeEnumDefault = map to <<< decodeEnum defaultGenericEnumOptions
+
+-- | A generic function to be used with "Enums", or sum types with only no-argument constructors. This is used for decoding from strings to one of the constructors, combined with the `constructorTagTransform` property of `SumEncoding`.
 genericDecodeEnum
   :: forall a rep
    . Generic a rep
@@ -26,6 +35,14 @@ genericDecodeEnum
   -> Foreign
   -> F a
 genericDecodeEnum opts = map to <<< decodeEnum opts
+
+genericEncodeEnumDefault
+  :: forall a rep
+   . Generic a rep
+  => GenericEncodeEnum rep
+  => a
+  -> Foreign
+genericEncodeEnumDefault = encodeEnum defaultGenericEnumOptions <<< from
 
 -- | A generic function to be used with "Enums", or sum types with only no-argument constructors. This is used for encoding to strings from one of the constructors, combined with the `constructorTagTransform` property of `SumEncoding`.
 -- |

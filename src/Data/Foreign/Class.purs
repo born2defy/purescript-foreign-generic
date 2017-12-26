@@ -5,8 +5,8 @@ import Control.Monad.Except (mapExcept)
 import Data.Array ((..), zipWith, length)
 import Data.Bifunctor (lmap)
 import Data.Foreign (F, Foreign, ForeignError(ErrorAtIndex), readArray, readBoolean, readChar, readInt, readNumber, readString, toForeign)
-import Data.Foreign.NullOrUndefined (NullOrUndefined(..), readNullOrUndefined, undefined)
-import Data.Maybe (maybe)
+import Data.Foreign.NullOrUndefined (NullOrUndefined(..), unNullOrUndefined, readNullOrUndefined, undefined)
+import Data.Maybe (maybe, Maybe)
 import Data.StrMap as StrMap
 import Data.Traversable (sequence)
 import Data.Foreign.Internal (readStrMap)
@@ -105,3 +105,10 @@ instance encodeNullOrUndefined :: Encode a => Encode (NullOrUndefined a) where
 
 instance strMapEncode :: Encode v => Encode (StrMap.StrMap v) where 
   encode = toForeign <<< StrMap.mapWithKey (\_ -> encode)
+
+-- | Maybe Values - Yay!!!
+instance decodeMaybe :: Decode a => Decode (Maybe a) where
+  decode = pure <<< unNullOrUndefined <=< readNullOrUndefined decode
+
+instance encodeMaybe :: Encode a => Encode (Maybe a) where
+  encode ma = maybe undefined encode ma

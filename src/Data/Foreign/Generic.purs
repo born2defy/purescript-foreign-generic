@@ -1,5 +1,6 @@
 module Data.Foreign.Generic
   ( defaultOptions
+  , newtypeOptions
   , genericDecode
   , genericEncode
   , decodeJSON
@@ -34,6 +35,19 @@ defaultOptions =
         , constructorTagTransform: id
         }
   , unwrapSingleConstructors: false
+  , unwrapSingleArguments: true
+  , fieldTransform: id
+  }
+
+newtypeOptions :: Options
+newtypeOptions =
+  { sumEncoding:
+      TaggedObject
+        { tagFieldName: "tag"
+        , contentsFieldName: "contents"
+        , constructorTagTransform: id
+        }
+  , unwrapSingleConstructors: true
   , unwrapSingleArguments: true
   , fieldTransform: id
   }
