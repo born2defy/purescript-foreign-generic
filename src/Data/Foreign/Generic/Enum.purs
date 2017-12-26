@@ -12,6 +12,7 @@ type GenericEnumOptions =
   { constructorTagTransform :: String -> String
   }
 
+-- | Extra function in Fork
 defaultGenericEnumOptions :: GenericEnumOptions
 defaultGenericEnumOptions =
   { constructorTagTransform: id

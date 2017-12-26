@@ -1,15 +1,18 @@
 module Data.Foreign.Class where
 
 import Prelude
+
 import Control.Monad.Except (mapExcept)
 import Data.Array ((..), zipWith, length)
 import Data.Bifunctor (lmap)
 import Data.Foreign (F, Foreign, ForeignError(ErrorAtIndex), readArray, readBoolean, readChar, readInt, readNumber, readString, toForeign)
+import Data.Foreign.Index ((!))
+import Data.Foreign.Internal (readStrMap)
 import Data.Foreign.NullOrUndefined (NullOrUndefined(..), unNullOrUndefined, readNullOrUndefined, undefined)
 import Data.Maybe (maybe, Maybe)
 import Data.StrMap as StrMap
 import Data.Traversable (sequence)
-import Data.Foreign.Internal (readStrMap)
+import Data.Tuple (Tuple(..))
 
 -- | The `Decode` class is used to generate decoding functions
 -- | of the form `Foreign -> F a` using `generics-rep` deriving.
@@ -106,9 +109,24 @@ instance encodeNullOrUndefined :: Encode a => Encode (NullOrUndefined a) where
 instance strMapEncode :: Encode v => Encode (StrMap.StrMap v) where 
   encode = toForeign <<< StrMap.mapWithKey (\_ -> encode)
 
--- | Maybe Values - Yay!!!
+
+-- | Extra Instances in Forked Version
+-----------------------------------------
+
+-- | Maybe Instances - Yay!!!
 instance decodeMaybe :: Decode a => Decode (Maybe a) where
   decode = pure <<< unNullOrUndefined <=< readNullOrUndefined decode
 
 instance encodeMaybe :: Encode a => Encode (Maybe a) where
   encode ma = maybe undefined encode ma
+
+ -- | Tuple Instances
+instance decodeTuple :: (Decode a, Decode b) => Decode (Tuple a b) where
+  decode value = do 
+    fst <- value ! "fst" >>= decode
+    snd <- value ! "snd" >>= decode
+    pure $ Tuple fst snd
+
+instance encodeTuple :: (Encode a, Encode b) => Encode (Tuple a b) where
+  encode (Tuple x y) = toForeign $ { fst: encode x, snd: encode y }
+

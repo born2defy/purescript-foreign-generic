@@ -4,6 +4,7 @@
     "clean": "rimraf output && rimraf .pulp-cache",
     "build": "pulp build -- --censor-lib --strict",
     "bower":"bower",
+    "psci":"pulp psci",
     "test": "pulp test"
   },
   "dependencies": {
