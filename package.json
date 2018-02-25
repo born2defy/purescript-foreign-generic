@@ -3,12 +3,15 @@
   "scripts": {
     "clean": "rimraf output && rimraf .pulp-cache",
     "build": "pulp build -- --censor-lib --strict",
-    "test": "pulp test"
+    "test": "pulp test",
+    "getdeps": "bower install"
   },
   "devDependencies": {
     "pulp": "^11.0.0",
     "purescript": "^0.11.5",
     "purescript-psa": "^0.5.1",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "bower":"^1.8.0"
   }
 }
+ 
