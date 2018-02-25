@@ -39,6 +39,7 @@ defaultOptions =
   , fieldTransform: id
   }
 
+-- | Extra function in Fork
 newtypeOptions :: Options
 newtypeOptions =
   { sumEncoding:
